@@ -11,7 +11,7 @@ const SocketHandler = (req, res) => {
     io.on("connection", (socket) => {
       socket.on("message-sent", (msg) => {
         msg.timestamp = new Date().getTime();
-        socket.broadcast.emit("new-message", msg);
+        socket.emit("new-message", msg);
       });
     });
   }
