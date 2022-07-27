@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import { Messages } from "../components/messages/messages";
 
@@ -8,6 +8,7 @@ const Home = () => {
   const [name, setName] = useState(null);
   const [msgs, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const users = useRef(0);
 
   useEffect(() => {
     socketInitializer();
@@ -33,6 +34,10 @@ const Home = () => {
 
     socket.on("new-message", (data) => {
       setMessages((prevStatus) => [...prevStatus, data]);
+    });
+
+    socket.on("users", (data) => {
+      users.current = data;
     });
   };
 
@@ -65,8 +70,10 @@ const Home = () => {
       )}
       {name && (
         <>
-          <h2>{name}</h2>
-          <hr />
+          <div className="navbar">
+            <h2 className="name">{name}</h2>
+            <p>Users connected: {users.current}</p>
+          </div>
           <Messages msgs={msgs} socket={socket} />
           <form onSubmit={onMsgSent} className="msg-form">
             <input

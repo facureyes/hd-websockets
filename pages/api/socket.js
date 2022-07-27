@@ -9,9 +9,13 @@ const SocketHandler = (req, res) => {
     res.socket.server.io = io;
 
     io.on("connection", (socket) => {
+      io.emit("users", io.engine.clientsCount);
       socket.on("message-sent", (msg) => {
         msg.timestamp = new Date().getTime();
         io.emit("new-message", msg);
+      });
+      socket.on("disconnect", (reason) => {
+        io.emit("users", io.engine.clientsCount);
       });
     });
   }
